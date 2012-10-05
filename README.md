@@ -32,6 +32,8 @@ PHPRestService is a PHP class for developing RESTful applications and APIs.
     ->addDeleteRoute('page/([0-9]+)', 'deletePage')
     ->addPostRoute('page/([0-9]+)', 'updatePage')
 
+    ->addGetRoute('foo/bar/too', 'doFooBar')
+
     ->addSubController('tools', \RestApi\Tools) //adds a new sub entry point 'tools' => admin/tools
         ->addDeleteRoute('cache', 'clearCache')
         ->addGetRoute('rebuild-index', 'rebuildIndex')
@@ -63,6 +65,11 @@ class Admin {
 
         return $this->killSession();
 
+    }
+
+
+    public function getPage($id){
+        //...
     }
 
 }
@@ -163,3 +170,6 @@ You can call each method or a entry point with method OPTIONS to get some descri
      }
 
 ```
+
+
+Take a look into the code, to get more information about the possibilities. It's well documented.
