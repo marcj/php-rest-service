@@ -1,4 +1,4 @@
-<phpunit bootstrap="test/bootstrap.php"
+<phpunit bootstrap="Test/bootstrap.php"
          colors="true"
          convertNoticesToExceptions="false"
          convertErrorsToExceptions="false"
@@ -6,7 +6,7 @@
 
     <testsuites>
         <testsuite name="php-rest-service">
-            <directory>./test/</directory>
+            <directory>./Test/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
