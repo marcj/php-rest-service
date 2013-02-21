@@ -21,7 +21,7 @@ Features
 Installation
 ------------
 
- - https://packagist.org/marcj/php-rest-service.
+ - https://packagist.org/packages/marcj/php-rest-service.
  - More information available under https://packagist.org/.
 
 Requirements
