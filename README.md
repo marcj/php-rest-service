@@ -3,6 +3,8 @@ PHPRestService
 
 PHPRestService is a PHP class for developing RESTful applications and APIs.
 
+[![Build Status](https://travis-ci.org/marcj/php-rest-service.png)](https://travis-ci.org/marcj/php-rest-service)
+
 Features
 --------
 
