@@ -1,12 +1,12 @@
-<phpunit bootstrap="Test/bootstrap.php"
+<phpunit bootstrap="test/bootstrap.php"
          colors="true"
          convertNoticesToExceptions="false"
          convertErrorsToExceptions="false"
          convertWarningsToExceptions="false">
 
     <testsuites>
-        <testsuite name="PHPRestService">
-            <directory>./Test/</directory>
+        <testsuite name="php-rest-service">
+            <directory>./test/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

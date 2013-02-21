@@ -5,5 +5,10 @@ php:
   - 5.4
   - 5.5
 
+before_script:
+  # Composer
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install
+
 script:
   - phpunit;
