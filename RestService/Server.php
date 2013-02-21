@@ -58,7 +58,7 @@ class Server
     /**
      * The client
      *
-     * @var \RestService\Client
+     * @var Client
      */
     private $client;
 
