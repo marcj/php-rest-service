@@ -13,28 +13,8 @@ class Server
      *
      * structure:
      *  array(
-     *    '<uri>' => array('<methodName>', array(<requiredParams>), array(<optionalParams>));
+     *    '<uri>' => <callable>
      *  )
-     *
-     * <uri> with no starting or trailing slash!
-     *
-     * array(
-     *   'book/(.*)/(.*)' => array('book')
-     *   //calls book($method, $1, $2)
-     *
-     *   'house/(.*)' => array('book', array('sort'))
-     *   //calls book($method, $1, getArgv('sort'))
-     *
-     *   'label/flatten' => array('getLabel', array('uri'))
-     *   //Calls getLabel($method, getArgv('uri'))
-     *
-     *
-     *   'get:foo/bar' => array('getLabel', array('uri'), array('optionalSort'))
-     *   //Calls getLabel(getArgv('uri'), getArgv('optionalSort'))
-     *
-     *   'post:foo/bar' => array('saveLabel', array('uri'))
-     *   //Calls saveLabel(getArgv('uri'), getArgv('optionalSort'))
-     * )
      *
      * @var array
      */
