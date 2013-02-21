@@ -1,0 +1,20 @@
+{
+    "name": "php-rest-service",
+    "description": "PHPRestService is a simple and fast PHP class RESTful APIs.",
+    "keywords": ["REST", "RESTful", "php", "API"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MArc J. Schmidt",
+            "homepage": "https://github.com/MArcJ"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "RestService": "src/"
+        }
+    }
+}

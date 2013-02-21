@@ -1,0 +1,12 @@
+<phpunit bootstrap="Test/bootstrap.php"
+         colors="true"
+         convertNoticesToExceptions="false"
+         convertErrorsToExceptions="false"
+         convertWarningsToExceptions="false">
+
+    <testsuites>
+        <testsuite name="PHPRestService">
+            <directory>./Test/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
