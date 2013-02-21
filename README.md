@@ -15,7 +15,7 @@ Features
 + Can return a summary of all routes or one route through `OPTIONS` method based on PHPDoc (if `OPTIONS` is not overridden)
 + Support of `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD` and `OPTIONS`
 + Suppress the HTTP Status code with ?_suppress_status_code=1 (for clients that has troubles with that)
-+ Supports ?_method=<method>
++ Supports ?_method=`httpMethod`
 + With auto-generation through PHP's `reflection`
 
 Installation
