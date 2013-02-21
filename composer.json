@@ -1,5 +1,5 @@
 {
-    "name": "php-rest-service",
+    "name": "marcj/php-rest-service",
     "description": "PHPRestService is a simple and fast PHP class RESTful APIs.",
     "keywords": ["REST", "RESTful", "php", "API"],
     "license": "MIT",
