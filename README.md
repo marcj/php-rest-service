@@ -1,7 +1,7 @@
-PHPRestService
+php-rest-service
 ==============
 
-PHPRestService is a PHP class for developing RESTful applications and APIs.
+Php-Rest-Rervice is a PHP class for RESTful JSON APIs.
 
 [![Build Status](https://travis-ci.org/marcj/php-rest-service.png)](https://travis-ci.org/marcj/php-rest-service)
 
