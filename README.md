@@ -1,7 +1,7 @@
 php-rest-service
 ==============
 
-Php-Rest-Rervice is a PHP class for RESTful JSON APIs.
+Php-Rest-Service is a PHP class for RESTful JSON APIs.
 
 [![Build Status](https://travis-ci.org/marcj/php-rest-service.png)](https://travis-ci.org/marcj/php-rest-service)
 
