@@ -804,7 +804,7 @@ class Server
                     return $this->sendBadRequest('MissingRequiredArgumentException', sprintf("Argument '%s' is missing.", $name));
                 }
 
-                $arguments[] = isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : '');
+                $arguments[] = isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : null);
             }
         }
 
