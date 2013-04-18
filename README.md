@@ -29,6 +29,14 @@ Requirements
 
  - PHP 5.3 and above.
  - PHPUnit to execute the test suite.
+ - Setup PATH_INFO in mod_rewrite (.htaccess) or other webserver configuration
+   
+Example:
+```
+//apache .htaccess
+RewriteEngine On
+RewriteRule (.+) index.php/$1 [L]
+```
 
 
 Usage Demo
