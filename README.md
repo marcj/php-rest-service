@@ -14,8 +14,8 @@ Features
 + Parameter validation through PHP function signature
 + Can return a summary of all routes or one route through `OPTIONS` method based on PHPDoc (if `OPTIONS` is not overridden)
 + Support of `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD` and `OPTIONS`
-+ Suppress the HTTP Status code with ?_suppress_status_code=1 (for clients that has troubles with that)
-+ Supports ?_method=`httpMethod`
++ Suppress the HTTP status code with ?_suppress_status_code=1 (for clients that have troubles with that)
++ Supports ?_method=`httpMethod` as addition to the actual HTTP method.
 + With auto-generation through PHP's `reflection`
 
 Installation
@@ -23,6 +23,28 @@ Installation
 
  - https://packagist.org/packages/marcj/php-rest-service.
  - More information available under https://packagist.org/.
+
+Create a `composer.json`:
+
+```json
+{
+    "require": {
+        "marcj/php-rest-service": "*"
+    }
+}
+```
+
+and run
+
+```bash
+$ wget http://getcomposer.org/composer.phar
+$ php composer.phar install
+```
+
+After the installation, you need to include the `vendor/autoload.php` to make the class in your script available.
+```php
+include 'vendor/autoload.php';
+```
 
 Requirements
 ------------
@@ -37,7 +59,6 @@ Example:
 RewriteEngine On
 RewriteRule (.+) index.php/$1 [L]
 ```
-
 
 Usage Demo
 ----------
@@ -192,13 +213,12 @@ class Tools {
 
 ## Responses
 
-The Response body is always a array (JSON per default) containing a status code and the actual data. If a exception has been thrown, it contains
-the status 500, the exception class name as error and the message as message.
+The response body is always a array (JSON per default) containing a status code and the actual data.
+If a exception has been thrown, it contains the status 500, the exception class name as error and the message as message.
 
 Some examples:
 
 ```
-
 + GET admin/login?username=foo&password=bar
   => {"status": "200", "data": true}
 
@@ -215,8 +235,6 @@ Some examples:
 
 + GET admin/tools/cache
   => {"status": 200, "data": true}
-
-
 ```
 
 License
