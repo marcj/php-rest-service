@@ -598,7 +598,7 @@ class Server
                 if (get_parent_class($this->controller) == '\RestService\Server') {
                     $this->controller->setClient($this->getClient());
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new Exception('Error during initialisation of '.$pClassName.': '.$e);
             }
         } else {
