@@ -833,7 +833,7 @@ class Server
 
         if ($pController && is_string($pMethod)) {
             if (!method_exists($pController, $pMethod)) {
-                return $this->sendError('MethodNotFoundException', tf('Method %s in class %s not found.', $pMethod, get_class($pController)));
+                return $this->sendError('MethodNotFoundException', sprintf('Method %s in class %s not found.', $pMethod, get_class($pController)));
             } else {
                 $callable = array($pController, $pMethod);
             }
