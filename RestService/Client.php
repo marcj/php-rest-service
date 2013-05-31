@@ -240,7 +240,7 @@ class Client
         $strLen      = strlen($json);
         $indentStr   = '    ';
         $newLine     = "\n";
-        $prevChar    = '';
+        $inEscapeMode = false; //if the last char is a valid \ char.
         $outOfQuotes = true;
 
         for ($i=0; $i<=$strLen; $i++) {
@@ -249,7 +249,7 @@ class Client
             $char = substr($json, $i, 1);
 
             // Are we inside a quoted string?
-            if ($char == '"' && $prevChar != '\\') {
+            if ($char == '"' && !$inEscapeMode) {
                 $outOfQuotes = !$outOfQuotes;
 
                 // If this character is the end of an element,
@@ -280,7 +280,10 @@ class Client
                 }
             }
 
-            $prevChar = $char;
+            if ($char == '\\' && !$inEscapeMode)
+                $inEscapeMode = true;
+            else
+                $inEscapeMode = false;
         }
 
         return $result;
