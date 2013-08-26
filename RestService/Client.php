@@ -177,12 +177,12 @@ class Client
         }
 
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])
+        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']))
             $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 
-        if ($_GET['_method'])
+        if (isset($_GET['_method']))
             $method = $_GET['_method'];
-        else if ($_POST['_method'])
+        else if (isset($_POST['_method']))
             $method = $_POST['_method'];
 
         $method = strtolower($method);
@@ -209,6 +209,17 @@ class Client
     }
 
     /**
+     * Set header Content-Length $pMessage.
+     *
+     * @param $pMessage
+     */
+    public function setContentLength($pMessage)
+    {
+        if (php_sapi_name() !== 'cli' )
+            header('Content-Length: '.strlen($pMessage));
+    }
+
+    /**
      * Converts $pMessage to pretty json.
      *
      * @param $pMessage
@@ -219,7 +230,10 @@ class Client
         if (php_sapi_name() !== 'cli' )
             header('Content-Type: application/json; charset=utf-8');
 
-        return $this->jsonFormat($pMessage);
+        $result = $this->jsonFormat($pMessage);
+        $this->setContentLength($result);
+
+        return $result;
     }
 
     /**
@@ -300,6 +314,7 @@ class Client
         $xml = $this->toXml($pMessage);
         $xml = "<?xml version=\"1.0\"?>\n<response>\n$xml</response>\n";
 
+        $this->setContentLength($xml);
         return $xml;
 
     }
