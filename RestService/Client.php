@@ -177,12 +177,12 @@ class Client
         }
 
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])
+        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']))
             $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 
-        if ($_GET['_method'])
+        if (isset($_GET['_method']))
             $method = $_GET['_method'];
-        else if ($_POST['_method'])
+        else if (isset($_POST['_method']))
             $method = $_POST['_method'];
 
         $method = strtolower($method);
