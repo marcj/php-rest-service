@@ -253,7 +253,7 @@ Some examples:
   =>
   {
      "status": "200",
-     "data": true}
+     "data": true
   }
 
 + GET admin/login?username=foo&password=invalidPassword
