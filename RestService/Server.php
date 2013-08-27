@@ -990,7 +990,7 @@ class Server
         $parameters = array();
 
         if (isset($phpDoc['param'])) {
-            if (is_string(key($phpDoc['param'])))
+            if (is_array($phpDoc['param']) && is_string(key($phpDoc['param'])))
                 $phpDoc['param'] = array($phpDoc['param']);
 
             $c = 0;
