@@ -47,36 +47,17 @@ include 'vendor/autoload.php';
 ```
 
 Requirements
-============
+------------
 
  - PHP 5.3 and above.
  - PHPUnit to execute the test suite.
  - Setup PATH_INFO in mod_rewrite (.htaccess) or other webserver configuration
    
-Example config:
-apache webserver
-----------------
+Example:
 ```
-//.htaccess
+//apache .htaccess
 RewriteEngine On
 RewriteRule (.+) index.php/$1 [L]
-```
-nginx webserver
----------------
-```
-// edit virtualhost /etc/nginx/conf.d/name_virtualhost_file
-server {
- .. something params ...
- location / {
-  include fastcgi_params;
-     
-  fastcgi_pass unix:/var/run/php5-fpm.sock;
-  fastcgi_param SCRIPT_FILENAME $document_root/index.php;
- }
-}
-
-// and add line to /etc/nginx/fastcgi_params
-fastcgi_param PATH_INFO $fastcgi_script_name;
 ```
 
 Usage Demo
