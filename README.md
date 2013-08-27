@@ -112,18 +112,35 @@ class Admin {
         return $this->getContainer('auth')->isLoggedIn();
     }
 
+    /**
+    * @param string $username
+    * @param string $password
+    * return boolean
+    */
     public function postLogin($username, $password){
         return $this->getContainer('auth')->doLogin($username, $password);
+    }
+
+    /**
+     * @param string $server
+     * @url stats/([0-9]+)
+     * @url stats
+     * @return string
+     */
+    public function getStats($server = '1'){
+        return $this->getServerStats($server);
     }
 
 }
 
 ```
 
-Generates folling entry points:
+Generates following entry points:
 ```
     + GET  /admin/logged-in
     + POST /admin/login?username=&password=
+    + GET  /admin/stats/([0-9]+)
+    + GET  /admin/stats
 ```
 
 
@@ -165,8 +182,6 @@ Server::create('/admin', new MyRestApi\Admin) //base entry points `/admin`
 namespace MyRestApi;
 
 class Admin {
-
-
     public function login($username, $password){
 
         if (!$this->validLogin($username, $password)
@@ -186,17 +201,14 @@ class Admin {
 
     }
 
-
     public function getPage($id){
         //...
     }
-
 }
 
 namespace RestAPI;
 
 class Tools {
-
     /**
     * Clears the cache of the app.
     *
@@ -206,7 +218,6 @@ class Tools {
     public function clearCache($withIndex = false){
         return true;
     }
-
 }
 ```
 
@@ -220,21 +231,46 @@ Some examples:
 
 ```
 + GET admin/login?username=foo&password=bar
-  => {"status": "200", "data": true}
+  =>
+  {
+     "status": "200",
+     "data": true}
+  }
 
 + GET admin/login?username=foo&password=invalidPassword
-  => {"status": "500", "error": "InvalidLoginException", "message": "Login is invalid or no access"}
+  =>
+  {
+     "status": "500",
+     "error": "InvalidLoginException",
+     "message": "Login is invalid or no access"
+  }
 
 + GET admin/login
-  => {"status: "400", "MissingRequiredArgumentException", "Argument 'username' is missing");
+  =>
+  {
+     "status: "400",
+     "error": "MissingRequiredArgumentException",
+     "message": "Argument 'username' is missing"
+  }
 
 + GET admin/login?username=foo&password=invalidPassword
   With active debugMode we'll get:
-  => {"status": "500", "error": "InvalidLoginException", "message": "Login is invalid or no access",
-      "line": 10, "file": "libs/RestAPI/Admin.class.php", "trace": <debugTrace>}
+  =>
+  {
+     "status": "500",
+     "error": "InvalidLoginException",
+     "message": "Login is invalid or no access",
+     "line": 10,
+     "file": "libs/RestAPI/Admin.class.php",
+     "trace": <debugTrace>
+  }
 
 + GET admin/tools/cache
-  => {"status": 200, "data": true}
+  =>
+  {
+     "status": 200,
+     "data": true
+  }
 ```
 
 License
