@@ -626,14 +626,14 @@ class Server
     }
 
     /**
-     * Normalize $pUrl
+     * Normalize $pUrl. Cuts of the trailing slash.
      *
-     * @param $pUrl Ref
+     * @param string $pUrl
      */
     public function normalizeUrl(&$pUrl)
     {
+        if ('/' === $pUrl) return;
         if (substr($pUrl, -1) == '/') $pUrl = substr($pUrl, 0, -1);
-        if (substr($pUrl, 0, 1) == '/') $pUrl = substr($pUrl, 1);
     }
 
     /**
@@ -729,9 +729,10 @@ class Server
         }
 
         //check if its in our area
-        if (strpos($this->getClient()->getUrl().'/', $this->triggerUrl.'/') !== 0) return;
+        if (strpos($this->getClient()->getUrl(), $this->triggerUrl) !== 0) return;
 
-        $uri = substr($this->getClient()->getUrl(), strlen($this->triggerUrl));
+        $endPos = $this->triggerUrl === '/' ? 1 : strlen($this->triggerUrl) + 1;
+        $uri = substr($this->getClient()->getUrl(), $endPos);
 
         if (!$uri) $uri = '';
 
