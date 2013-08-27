@@ -676,10 +676,18 @@ class Server
                 $httpMethod = '_all_';
             }
 
-            $r = new \ReflectionMethod($this->controller, $method);
-            if ($r->isPrivate()) continue;
+            $reflectionMethod = new \ReflectionMethod($this->controller, $method);
+            if ($reflectionMethod->isPrivate()) continue;
 
-            $this->routes[$uri][$httpMethod] = $method;
+            $phpDocs = $this->getMethodMetaData($reflectionMethod);
+            if (isset($phpDocs['url'])) {
+                foreach($phpDocs['url'] as $urlAnnotation) {
+                    $this->routes[$urlAnnotation['url']][$httpMethod] = $method;
+                }
+            } else {
+                $this->routes[$uri][$httpMethod] = $method;
+            }
+
         }
 
         return $this;
@@ -804,7 +812,7 @@ class Server
                     return $this->sendBadRequest('MissingRequiredArgumentException', sprintf("Argument '%s' is missing.", $name));
                 }
 
-                $arguments[] = isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : null);
+                $arguments[] = isset($_GET[$name]) ? $_GET[$name] : (isset($_POST[$name]) ? $_POST[$name] : $param->getDefaultValue());
             }
         }
 
@@ -828,7 +836,6 @@ class Server
 
     public function fireMethod($pMethod, $pController, $pArguments)
     {
-
         $callable = false;
 
         if ($pController && is_string($pMethod)) {
@@ -911,7 +918,7 @@ class Server
      * @param  array             $pRegMatches
      * @return array
      */
-    public function getMethodMetaData(\ReflectionMethod $pMethod, $pRegMatches)
+    public function getMethodMetaData(\ReflectionMethod $pMethod, $pRegMatches = null)
     {
         $file = $pMethod->getFileName();
         $startLine = $pMethod->getStartLine();
@@ -968,8 +975,7 @@ class Server
         $refParams = $pMethod->getParameters();
         $params = array();
 
-        if (!$phpDoc['param'])
-            $fillPhpDocParam = true;
+        $fillPhpDocParam = !$phpDoc['param'];
 
         foreach ($refParams as $param) {
             $params[$param->getName()] = $param;
@@ -995,7 +1001,7 @@ class Server
                 'type' => $phpDocParam['type']
             );
 
-            if (is_array($pRegMatches) && $pRegMatches[$c]) {
+            if ($pRegMatches && is_array($pRegMatches) && $pRegMatches[$c]) {
                 $parameter['fromRegex'] = '$'.($c+1);
             }
 
@@ -1008,14 +1014,19 @@ class Server
             $c++;
         }
 
-        if (!$phpDoc['return'])
+        if (!isset($phpDoc['return']))
             $phpDoc['return'] = array('type' => 'mixed');
 
-        return array(
+        $result = array(
             'description' => $phpDoc['description'],
             'parameters' => $parameters,
             'return' => $phpDoc['return']
         );
+
+        if (isset($phpDoc['url']))
+            $result['url'] = $phpDoc['url'];
+
+        return $result;
     }
 
     /**
@@ -1063,6 +1074,7 @@ class Server
         //parse tags
         $regex = array(
             'param' => array('/^@param\s*\t*([a-zA-Z_\\\[\]]*)\s*\t*\$([a-zA-Z_]*)\s*\t*(.*)/', array('type', 'name', 'description')),
+            'url' => array('/^@url\s*\t*(.+)/', array('url')),
             'return' => array('/^@return\s*\t*([a-zA-Z_\\\[\]]*)\s*\t*(.*)/', array('type', 'description')),
         );
         foreach ($tags as $tag => &$data) {
