@@ -18,6 +18,14 @@ class CollectText extends \PHPUnit_Framework_TestCase
             ->setClient('RestService\\InternalClient')
             ->collectRoutes();
     }
+    public function testNonPhpDocMethod()
+    {
+        $response = $this->restService->simulateCall('/method-without-php-doc', 'get');
+        $this->assertEquals('{
+    "status": 200,
+    "data": "hi"
+}', $response);
+    }
 
     public function testUrlAnnotation()
     {

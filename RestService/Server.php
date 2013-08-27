@@ -975,7 +975,7 @@ class Server
         $refParams = $pMethod->getParameters();
         $params = array();
 
-        $fillPhpDocParam = !$phpDoc['param'];
+        $fillPhpDocParam = !isset($phpDoc['param']);
 
         foreach ($refParams as $param) {
             $params[$param->getName()] = $param;
@@ -989,39 +989,43 @@ class Server
 
         $parameters = array();
 
-        if (is_string(key($phpDoc['param'])))
-            $phpDoc['param'] = array($phpDoc['param']);
+        if (isset($phpDoc['param'])) {
+            if (is_array($phpDoc['param']) && is_string(key($phpDoc['param'])))
+                $phpDoc['param'] = array($phpDoc['param']);
 
-        $c = 0;
-        foreach ($phpDoc['param'] as $phpDocParam) {
+            $c = 0;
+            foreach ($phpDoc['param'] as $phpDocParam) {
 
-            $param = $params[$phpDocParam['name']];
-            if (!$param) continue;
-            $parameter = array(
-                'type' => $phpDocParam['type']
-            );
+                $param = $params[$phpDocParam['name']];
+                if (!$param) continue;
+                $parameter = array(
+                    'type' => $phpDocParam['type']
+                );
 
-            if ($pRegMatches && is_array($pRegMatches) && $pRegMatches[$c]) {
-                $parameter['fromRegex'] = '$'.($c+1);
+                if ($pRegMatches && is_array($pRegMatches) && $pRegMatches[$c]) {
+                    $parameter['fromRegex'] = '$'.($c+1);
+                }
+
+                $parameter['required'] = !$param->isOptional();
+
+                if ($param->isDefaultValueAvailable()) {
+                    $parameter['default'] = str_replace(array("\n", ' '), '', var_export($param->getDefaultValue(), true));
+                }
+                $parameters[$this->argumentName($phpDocParam['name'])] = $parameter;
+                $c++;
             }
-
-            $parameter['required'] = !$param->isOptional();
-
-            if ($param->isDefaultValueAvailable()) {
-                $parameter['default'] = str_replace(array("\n", ' '), '', var_export($param->getDefaultValue(), true));
-            }
-            $parameters[$this->argumentName($phpDocParam['name'])] = $parameter;
-            $c++;
         }
 
         if (!isset($phpDoc['return']))
             $phpDoc['return'] = array('type' => 'mixed');
 
         $result = array(
-            'description' => $phpDoc['description'],
             'parameters' => $parameters,
             'return' => $phpDoc['return']
         );
+
+        if (isset($phpDoc['description']))
+            $result['description'] = $phpDoc['description'];
 
         if (isset($phpDoc['url']))
             $result['url'] = $phpDoc['url'];
@@ -1038,6 +1042,8 @@ class Server
     public function parsePhpDoc($pString)
     {
         preg_match('#^/\*\*(.*)\*/#s', trim($pString), $comment);
+
+        if (0 === count($comment)) return array();
 
         $comment = trim($comment[1]);
 

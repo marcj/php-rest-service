@@ -25,4 +25,10 @@ class MyRoutes
         return sprintf('Stats for %s', $server);
     }
 
+
+    public function getMethodWithoutPhpDoc()
+    {
+        return 'hi';
+    }
+
 }
