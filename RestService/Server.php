@@ -883,7 +883,7 @@ class Server
 
         foreach ($this->routes as $routeUri => $routeMethods) {
 
-            $matches = [];
+            $matches = array();
             if (!$pUri || ($pUri && preg_match('|^'.$routeUri.'$|', $pUri, $matches))) {
 
                 if ($matches) {
