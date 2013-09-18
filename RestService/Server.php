@@ -883,6 +883,7 @@ class Server
 
         foreach ($this->routes as $routeUri => $routeMethods) {
 
+            $matches = [];
             if (!$pUri || ($pUri && preg_match('|^'.$routeUri.'$|', $pUri, $matches))) {
 
                 if ($matches) {
@@ -893,8 +894,12 @@ class Server
 
                 foreach ($routeMethods as $method => $phpMethod) {
 
-                    $ref = new \ReflectionClass($this->controller);
-                    $refMethod = $ref->getMethod($phpMethod);
+                    if (is_string($phpMethod)) {
+                        $ref = new \ReflectionClass($this->controller);
+                        $refMethod = $ref->getMethod($phpMethod);
+                    } else {
+                        $refMethod = new \ReflectionFunction($phpMethod);
+                    }
 
                     $def['methods'][strtoupper($method)] = $this->getMethodMetaData($refMethod, $matches);
 
@@ -919,7 +924,7 @@ class Server
      * @param  array             $pRegMatches
      * @return array
      */
-    public function getMethodMetaData(\ReflectionMethod $pMethod, $pRegMatches = null)
+    public function getMethodMetaData(\ReflectionFunctionAbstract $pMethod, $pRegMatches = null)
     {
         $file = $pMethod->getFileName();
         $startLine = $pMethod->getStartLine();
