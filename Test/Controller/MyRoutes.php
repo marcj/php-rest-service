@@ -31,4 +31,14 @@ class MyRoutes
         return 'hi';
     }
 
+    /**
+     * @url test/test
+     *
+     * @return string
+     */
+    public function getTest()
+    {
+        return 'test';
+    }
+
 }

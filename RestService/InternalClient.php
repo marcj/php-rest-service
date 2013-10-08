@@ -12,7 +12,6 @@ class InternalClient extends Client
 {
     public function sendResponse($pHttpCode = '200', $pMessage)
     {
-
         $pMessage = array_reverse($pMessage, true);
         $pMessage['status'] = $pHttpCode+0;
         $pMessage = array_reverse($pMessage, true);
@@ -20,7 +19,6 @@ class InternalClient extends Client
         $method = $this->getOutputFormatMethod($this->getOutputFormat());
 
         return $this->$method($pMessage);
-
     }
 
 }

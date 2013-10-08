@@ -5,7 +5,7 @@ namespace Test\Synthetic;
 use RestService\Server;
 use Test\Controller\MyRoutes;
 
-class CollectText extends \PHPUnit_Framework_TestCase
+class CollectTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Server

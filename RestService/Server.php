@@ -681,8 +681,13 @@ class Server
 
             $phpDocs = $this->getMethodMetaData($reflectionMethod);
             if (isset($phpDocs['url'])) {
-                foreach($phpDocs['url'] as $urlAnnotation) {
-                    $this->routes[$urlAnnotation['url']][$httpMethod] = $method;
+                if (isset($phpDocs['url']['url'])) {
+                    //only one route
+                    $this->routes[$phpDocs['url']['url']][$httpMethod] = $method;
+                } else {
+                    foreach($phpDocs['url'] as $urlAnnotation) {
+                        $this->routes[$urlAnnotation['url']][$httpMethod] = $method;
+                    }
                 }
             } else {
                 $this->routes[$uri][$httpMethod] = $method;
@@ -1099,14 +1104,12 @@ class Server
                     for ($i =1; $i < $c; $i++) {
                         if ($regex[$tag][1][$i-1]) {
                             $item[$regex[$tag][1][$i-1]] = $match[$i];
-
                         }
                     }
                 }
             }
             if (count($data) == 1)
                 $data = $data[0];
-
         }
 
         return $tags;
