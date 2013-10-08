@@ -59,7 +59,9 @@ apache webserver
 ```
 //.htaccess
 RewriteEngine On
-RewriteRule (.+) index.php/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule (.+) index.php/$1 [L,QSA]
 ```
 nginx webserver
 ---------------
