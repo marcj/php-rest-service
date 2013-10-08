@@ -618,7 +618,7 @@ class Server
     {
         $this->normalizeUrl($pTriggerUrl);
 
-        $controller = new Server($this->triggerUrl.'/'.$pTriggerUrl, $pControllerClass, $this);
+        $controller = new Server($this->triggerUrl . $pTriggerUrl, $pControllerClass, $this);
 
         $this->controllers[] = $controller;
 
