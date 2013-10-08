@@ -634,6 +634,7 @@ class Server
     {
         if ('/' === $pUrl) return;
         if (substr($pUrl, -1) == '/') $pUrl = substr($pUrl, 0, -1);
+        if (substr($pUrl, 0, 1) != '/') $pUrl = '/' . $pUrl;
     }
 
     /**
@@ -733,15 +734,15 @@ class Server
             }
         }
 
+        $requestedUrl = $this->getClient()->getUrl();
+        $this->normalizeUrl($requestedUrl);
         //check if its in our area
-        if (strpos($this->getClient()->getUrl(), $this->triggerUrl) !== 0) return;
+        if (strpos($requestedUrl, $this->triggerUrl) !== 0) return;
 
         $endPos = $this->triggerUrl === '/' ? 1 : strlen($this->triggerUrl) + 1;
-        $uri = substr($this->getClient()->getUrl(), $endPos);
+        $uri = substr($requestedUrl, $endPos);
 
         if (!$uri) $uri = '';
-
-        $this->normalizeUrl($uri);
 
         $route = false;
         $arguments = array();

@@ -60,5 +60,28 @@ class CustomRoutesTest extends \PHPUnit_Framework_TestCase
     "data": true
 }', $response);
 
+        $restService = Server::create('/v1/', new MyRoutes)
+            ->setClient('RestService\\InternalClient')
+            ->addPostRoute('login', 'postLogin');
+
+        $response = $restService->simulateCall('/v1/login?username=peter&password=pwd', 'post');
+
+        $this->assertEquals('{
+    "status": 200,
+    "data": true
+}', $response);
+
+
+        $restService = Server::create('v1', new MyRoutes)
+            ->setClient('RestService\\InternalClient')
+            ->addPostRoute('login', 'postLogin');
+
+        $response = $restService->simulateCall('/v1/login?username=peter&password=pwd', 'post');
+
+        $this->assertEquals('{
+    "status": 200,
+    "data": true
+}', $response);
+
     }
 }
