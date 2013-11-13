@@ -300,3 +300,7 @@ License
 Licensed under the MIT License. See the LICENSE file for more details.
 
 Take a look into the code, to get more information about the possibilities. It's well documented.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/marcj/php-rest-service/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
