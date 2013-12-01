@@ -599,7 +599,7 @@ class Server
                     $this->controller->setClient($this->getClient());
                 }
             } catch (\Exception $e) {
-                throw new Exception('Error during initialisation of '.$pClassName.': '.$e);
+                throw new \Exception('Error during initialisation of '.$pClassName.': '.$e);
             }
         } else {
             $this->controller = $this;
