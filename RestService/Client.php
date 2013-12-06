@@ -176,7 +176,7 @@ class Client
             return $this->method;
         }
 
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = @$_SERVER['REQUEST_METHOD'];
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']))
             $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 
@@ -386,7 +386,7 @@ class Client
      * Set the url.
      *
      * @param  string $pUrl
-     * @return Server $this
+     * @return Client $this
      */
     public function setUrl($pUrl)
     {
@@ -414,7 +414,7 @@ class Client
 
         //through uri suffix
         if (preg_match('/\.(\w+)$/i', $this->getUrl(), $matches)) {
-            if ($this->outputFormats[$matches[1]]) {
+            if (isset($this->outputFormats[$matches[1]])) {
                 $this->outputFormat = $matches[1];
                 $url = $this->getUrl();
                 $this->setUrl(substr($url, 0, (strlen($this->outputFormat)*-1)-1));

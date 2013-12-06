@@ -18,56 +18,56 @@ class Server
      *
      * @var array
      */
-    private $routes = array();
+    protected $routes = array();
 
     /**
      * Blacklisted http get arguments.
      *
      * @var array
      */
-    private $blacklistedGetParameters = array('_method', '_suppress_status_code');
+    protected $blacklistedGetParameters = array('_method', '_suppress_status_code');
 
     /**
      * Current URL that triggers the controller.
      *
      * @var string
      */
-    private $triggerUrl = '';
+    protected $triggerUrl = '';
 
     /**
      * Contains the controller object.
      *
      * @var string
      */
-    private $controller = '';
+    protected $controller = '';
 
     /**
      * List of sub controllers.
      *
      * @var array
      */
-    private $controllers = array();
+    protected $controllers = array();
 
     /**
      * Parent controller.
      *
      * @var \RestService\Server
      */
-    private $parentController;
+    protected $parentController;
 
     /**
      * The client
      *
      * @var Client
      */
-    private $client;
+    protected $client;
 
     /**
      * List of excluded methods.
      *
      * @var array|string array('methodOne', 'methodTwo') or * for all methods
      */
-    private $collectRoutesExclude = array('__construct');
+    protected $collectRoutesExclude = array('__construct');
 
     /**
      * List of possible methods.
@@ -81,7 +81,7 @@ class Server
      *
      * @var callable
      */
-    private $checkAccessFn;
+    protected $checkAccessFn;
 
     /**
      * Send exception function/method. Will be fired if a route-method throws a exception.
@@ -90,14 +90,14 @@ class Server
      *
      * @var callable
      */
-    private $sendExceptionFn;
+    protected $sendExceptionFn;
 
     /**
      * If this is true, we send file, line and backtrace if an exception has been thrown.
      *
      * @var boolean
      */
-    private $debugMode = false;
+    protected $debugMode = false;
 
     /**
      * Sets whether the service should serve route descriptions
@@ -105,7 +105,7 @@ class Server
      *
      * @var boolean
      */
-    private $describeRoutes = true;
+    protected $describeRoutes = true;
 
     /**
      * If this controller can not find a route,
@@ -113,7 +113,7 @@ class Server
      *
      * @var string
      */
-    private $fallbackMethod = '';
+    protected $fallbackMethod = '';
 
     /**
      * If the lib should send HTTP status codes.
@@ -122,7 +122,12 @@ class Server
      *
      * @var boolean
      */
-    private $withStatusCode = true;
+    protected $withStatusCode = true;
+
+    /**
+     * @var callable
+     */
+    protected $controllerFactory;
 
     /**
      * Constructor
@@ -151,6 +156,9 @@ class Server
             if ($pParentController->getDescribeRoutes())
                 $this->setDescribeRoutes($pParentController->getDescribeRoutes());
 
+            if ($pParentController->getControllerFactory())
+                $this->setControllerFactory($pParentController->getControllerFactory());
+
             $this->setHttpStatusCodes($pParentController->getHttpStatusCodes());
 
         } else {
@@ -174,6 +182,26 @@ class Server
         $clazz = get_called_class();
 
         return new $clazz($pTriggerUrl, $pControllerClass);
+    }
+
+    /**
+     * @param callable $controllerFactory
+     *
+     * @return Server $this
+     */
+    public function setControllerFactory(callable $controllerFactory)
+    {
+        $this->controllerFactory = $controllerFactory;
+
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getControllerFactory()
+    {
+        return $this->controllerFactory;
     }
 
     /**
@@ -437,7 +465,7 @@ class Server
             $msg['trace'] = $pException->getTraceAsString();
         }
 
-        if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
+        if (!$this->getClient()) throw new \Exception('Client not found in ServerController');
         return $this->getClient()->sendResponse('500', $msg);
 
     }
@@ -588,13 +616,20 @@ class Server
      * Setup the controller class.
      *
      * @param  string    $pClassName
-     * @throws Exception
+     * @throws \Exception
      */
-    private function createControllerClass($pClassName)
+    protected function createControllerClass($pClassName)
     {
         if ($pClassName != '') {
             try {
-                $this->controller = new $pClassName($this);
+                if ($this->controllerFactory) {
+                    $this->controller = call_user_func_array($this->controllerFactory, [
+                        $pClassName,
+                        $this
+                    ]);
+                } else {
+                    $this->controller = new $pClassName($this);
+                }
                 if (get_parent_class($this->controller) == '\RestService\Server') {
                     $this->controller->setClient($this->getClient());
                 }
@@ -786,7 +821,7 @@ class Server
             }
 
             $reflectionMethod = $ref->getMethod($callableMethod);
-        } elseif (is_callable($callableMethod)) {
+        } else if (is_callable($callableMethod)) {
             $reflectionMethod = new \ReflectionFunction($callableMethod);
         }
 
