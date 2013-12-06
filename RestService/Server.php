@@ -623,10 +623,10 @@ class Server
         if ($pClassName != '') {
             try {
                 if ($this->controllerFactory) {
-                    $this->controller = call_user_func_array($this->controllerFactory, [
+                    $this->controller = call_user_func_array($this->controllerFactory, array(
                         $pClassName,
                         $this
-                    ]);
+                    ));
                 } else {
                     $this->controller = new $pClassName($this);
                 }
