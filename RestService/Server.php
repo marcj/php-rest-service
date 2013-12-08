@@ -1133,7 +1133,7 @@ class Server
         foreach ($tags as $tag => &$data) {
             if ($tag == 'description') continue;
             foreach ($data as &$item) {
-                if ($regex[$tag]) {
+                if (isset($regex[$tag])) {
                     preg_match($regex[$tag][0], $item, $match);
                     $item = array();
                     $c = count($match);
