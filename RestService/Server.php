@@ -708,7 +708,7 @@ class Server
             if (in_array($method, $this->collectRoutesExclude)) continue;
 
             $info = explode('/', preg_replace('/([a-z]*)(([A-Z]+)([a-zA-Z0-9_]*))/', '$1/$2', $method));
-            $uri  = $this->camelCase2Dashes($info[1]);
+            $uri  = $this->camelCase2Dashes((empty($info[1]) ? '' : $info[1]));
 
             $httpMethod  = $info[0];
             if ($httpMethod == 'all') {
