@@ -243,6 +243,24 @@ class Tools {
 ```
 
 
+### Way 4. Parse `php://input`
+
+For AngularJS you can need parse `php://input` as json
+
+`index.php`:
+
+```php
+
+use RestService\Server;
+
+Server::create('/admin', 'myRestApi\Admin')
+    ->collectRoutes()
+    ->parsePhpInput()
+->run();
+
+```
+
+
 ## Responses
 
 The response body is always a array (JSON per default) containing a status code and the actual data.

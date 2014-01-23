@@ -1205,4 +1205,18 @@ class Server
         return false;
     }
 
+    /**
+     * Parse data php://input to $_POST. It is used in AngularJS
+     *
+     * @return $this
+     */
+    public function parsePhpInput(){
+        $data = file_get_contents("php://input");
+        $sData = json_decode($data, true);
+        if (!empty($sData)) foreach($sData as $key => $value)
+            $_POST[$key] = $value;
+
+        return $this;
+    }
+
 }
