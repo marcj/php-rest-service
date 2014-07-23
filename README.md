@@ -57,7 +57,7 @@ Example config:
 apache webserver
 ----------------
 ```
-//.htaccess
+#.htaccess
 RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
