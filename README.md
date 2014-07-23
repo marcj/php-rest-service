@@ -243,23 +243,9 @@ class Tools {
 ```
 
 
-### Way 4. Parse `php://input`
+### Way 4. Automatic detect receive `Content-Type` as `application/json`,  parse `php://input`
 
-For AngularJS you can need parse `php://input` as json
-
-`index.php`:
-
-```php
-
-use RestService\Server;
-
-Server::create('/admin', 'myRestApi\Admin')
-    ->collectRoutes()
-    ->parsePhpInput()
-->run();
-
-```
-
+All data will be writed into `$_POST`
 
 ## Responses
 
