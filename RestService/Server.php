@@ -653,7 +653,10 @@ class Server
     {
         $this->normalizeUrl($pTriggerUrl);
 
-        $controller = new Server($this->triggerUrl . $pTriggerUrl, $pControllerClass, $this);
+        $base = $this->triggerUrl;
+        if ($base == '/') $base = '';
+
+        $controller = new Server($base . $pTriggerUrl, $pControllerClass, $this);
 
         $this->controllers[] = $controller;
 
