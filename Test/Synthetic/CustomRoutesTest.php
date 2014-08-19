@@ -102,4 +102,22 @@ class CustomRoutesTest extends \PHPUnit_Framework_TestCase
 }', $response);
 
     }
+
+    public function testSubControllerWithSlashRootParent()
+    {
+        $restService = Server::create('/', new MyRoutes)
+            ->setClient('RestService\\InternalClient')
+            ->addSubController('sub', new MyRoutes())
+                ->addPostRoute('login', 'postLogin')
+            ->done()
+        ;
+
+        $response = $restService->simulateCall('/sub/login?username=peter&password=pwd', 'post');
+
+        $this->assertEquals('{
+    "status": 200,
+    "data": true
+}', $response);
+
+    }
 }
