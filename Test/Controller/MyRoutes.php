@@ -5,6 +5,22 @@ namespace Test\Controller;
 class MyRoutes
 {
     /**
+     * @return string
+     */
+    public function get()
+    {
+        return "root GET";
+    }
+
+    /**
+     * @return string
+     */
+    public function post()
+    {
+        return "root POST";
+    }
+
+    /**
      * @param  string $username
      * @param  string $password
      * @return bool
