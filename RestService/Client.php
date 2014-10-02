@@ -126,7 +126,7 @@ class Client
      * @param string $pHttpCode
      * @param $pMessage
      */
-    public function sendResponse($pHttpCode = '200', $pMessage)
+    public function sendResponse($pMessage, $pHttpCode = '200')
     {
         $suppressStatusCode = isset($_GET['_suppress_status_code']) ? $_GET['_suppress_status_code'] : false;
         if ($this->controller->getHttpStatusCodes() &&
