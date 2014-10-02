@@ -61,13 +61,6 @@ class Server
      * @var Client
      */
     protected $client;
-    
-    /**
-     * Http status code
-     * 
-     * @var integer
-     */
-    protected $httpStatus;
 
     /**
      * List of excluded methods.
@@ -130,6 +123,13 @@ class Server
      * @var boolean
      */
     protected $withStatusCode = true;
+    
+    /**
+     *  Custom user httpCode
+     *
+     *  @var integer
+     */
+    protected $httpStatusCode = 200;
 
     /**
      * @var callable
@@ -226,15 +226,15 @@ class Server
     }
     
     /**
-     * Set custom Http Code
-     *
-     * @param  integer $httpStatus
-     * @return Server  $this
+     * Setting up http code
+     * 
+     * @param integer $httpStatusCode
+     * @return Server $this
      */
-    public function setHttpStatus($httpStatus)
+     
+    public function setHttpStatusCode($httpStatusCode)
     {
-        $this->httpStatus = $httpStatus;
-        
+        $this->httpStatusCode = $httpStatusCode;
         return $this;
     }
 
@@ -248,13 +248,12 @@ class Server
     }
     
     /**
-     * Get custom Http Code
      *
      * @return integer
      */
-    public function getHttpStatus()
+    public function getHttpStatusCode()
     {
-        return $this->httpStatus;
+        return $this->httpStatusCode;
     }
 
     /**
@@ -452,10 +451,13 @@ class Server
      */
     public function sendBadRequest($pCode, $pMessage)
     {
-        if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
-        $msg = array('error' => $pCode, 'message' => $pMessage);
-        if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse($msg, 400);
+        if (is_object($pMessage) && $pMessage->xdebug_message) {
+            $pMessage = $pMessage->xdebug_message;
+        }
+        if (!$this->getClient()) {
+            throw new \Exception('client_not_found_in_ServerController'); 
+        }
+        return $this->setHttpStatusCode(400)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -467,10 +469,13 @@ class Server
      */
     public function sendError($pCode, $pMessage)
     {
-        if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
-        $msg = array('error' => $pCode, 'message' => $pMessage);
-        if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse($msg, 500);
+        if (is_object($pMessage) && $pMessage->xdebug_message) {
+            $pMessage = $pMessage->xdebug_message;
+        }
+        if (!$this->getClient()) {
+            throw new \Exception('client_not_found_in_ServerController');
+        }
+        return $this->setHttpStatusCode(500)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -485,7 +490,9 @@ class Server
         }
 
         $message = $pException->getMessage();
-        if (is_object($message) && $message->xdebug_message) $message = $message->xdebug_message;
+        if (is_object($message) && $message->xdebug_message) {
+            $message = $message->xdebug_message;
+        }
 
         $msg = array('error' => get_class($pException), 'message' => $message);
 
@@ -495,9 +502,10 @@ class Server
             $msg['trace'] = $pException->getTraceAsString();
         }
 
-        if (!$this->getClient()) throw new \Exception('Client not found in ServerController');
-        return $this->getClient()->sendResponse($msg, 500);
-
+        if (!$this->getClient()) {
+            throw new \Exception('Client not found in ServerController');
+        }
+        return $this->setHttpStatusCode(500)->send($msg);
     }
 
     /**
@@ -710,9 +718,16 @@ class Server
      *
      * @param $pData
      */
-    public function send($pData, $httpStatus = 200)
+    public function send($pData)
     {
-        return $this->getClient()->sendResponse(array('data' => $pData), $this->httpStatus? $this->httpStatus : $httpStatus);
+        $msg = array();
+        if( substr($this->httpStatusCode, 0, 1) == '2' )
+        {
+          $msg['data'] = $pData;
+        } else {
+          $msg = $pData;
+        }
+        return $this->getClient()->sendResponse($msg, ($this->httpStatusCode? $this->httpStatusCode : 200));
     }
 
     /**
