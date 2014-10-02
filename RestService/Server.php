@@ -61,6 +61,13 @@ class Server
      * @var Client
      */
     protected $client;
+    
+    /**
+     * Http status code
+     * 
+     * @var integer
+     */
+    protected $httpStatus;
 
     /**
      * List of excluded methods.
@@ -217,6 +224,19 @@ class Server
 
         return $this;
     }
+    
+    /**
+     * Set custom Http Code
+     *
+     * @param  integer $httpStatus
+     * @return Server  $this
+     */
+    public function setHttpStatus($httpStatus)
+    {
+        $this->httpStatus = $httpStatus;
+        
+        return $this;
+    }
 
     /**
      *
@@ -225,6 +245,16 @@ class Server
     public function getHttpStatusCodes()
     {
         return $this->withStatusCode;
+    }
+    
+    /**
+     * Get custom Http Code
+     *
+     * @return integer
+     */
+    public function getHttpStatus()
+    {
+        return $this->httpStatus;
     }
 
     /**
@@ -425,7 +455,7 @@ class Server
         if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
         $msg = array('error' => $pCode, 'message' => $pMessage);
         if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse('400', $msg);
+        return $this->getClient()->sendResponse($msg, 400);
     }
 
     /**
@@ -440,7 +470,7 @@ class Server
         if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
         $msg = array('error' => $pCode, 'message' => $pMessage);
         if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse('500', $msg);
+        return $this->getClient()->sendResponse($msg, 500);
     }
 
     /**
@@ -466,7 +496,7 @@ class Server
         }
 
         if (!$this->getClient()) throw new \Exception('Client not found in ServerController');
-        return $this->getClient()->sendResponse('500', $msg);
+        return $this->getClient()->sendResponse($msg, 500);
 
     }
 
@@ -680,9 +710,9 @@ class Server
      *
      * @param $pData
      */
-    public function send($pData)
+    public function send($pData, $httpStatus = 200)
     {
-        return $this->getClient()->sendResponse(200, array('data' => $pData));
+        return $this->getClient()->sendResponse(array('data' => $pData), $this->httpStatus? $this->httpStatus : $httpStatus);
     }
 
     /**
