@@ -170,6 +170,7 @@ class Server
 
         } else {
             $this->setClient(new Client($this));
+            $this->parsePhpInput();
         }
 
         $this->setClass($pControllerClass);
@@ -451,13 +452,14 @@ class Server
      */
     public function sendBadRequest($pCode, $pMessage)
     {
+        $httpCode = ($this->httpStatusCode && substr($this->httpStatusCode, 0, 1) === '4')? $this->httpStatusCode : 400;
         if (is_object($pMessage) && $pMessage->xdebug_message) {
             $pMessage = $pMessage->xdebug_message;
         }
         if (!$this->getClient()) {
             throw new \Exception('client_not_found_in_ServerController'); 
         }
-        return $this->setHttpStatusCode(400)->send(array('error' => $pCode, 'message' => $pMessage));
+        return $this->setHttpStatusCode($httpCode)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -469,13 +471,14 @@ class Server
      */
     public function sendError($pCode, $pMessage)
     {
+        $httpCode = ($this->httpStatusCode && substr($this->httpStatusCode, 0, 1) === '5')? $this->httpStatusCode : 400;
         if (is_object($pMessage) && $pMessage->xdebug_message) {
             $pMessage = $pMessage->xdebug_message;
         }
         if (!$this->getClient()) {
             throw new \Exception('client_not_found_in_ServerController');
         }
-        return $this->setHttpStatusCode(500)->send(array('error' => $pCode, 'message' => $pMessage));
+        return $this->setHttpStatusCode($httpCode)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -721,13 +724,14 @@ class Server
     public function send($pData)
     {
         $msg = array();
-        if( substr($this->httpStatusCode, 0, 1) == '2' )
+        $httpCode = ($this->httpStatusCode? $this->httpStatusCode : 200);
+        if( substr($this->httpStatusCode, 0, 1) === '2' )
         {
           $msg['data'] = $pData;
         } else {
           $msg = $pData;
         }
-        return $this->getClient()->sendResponse($msg, ($this->httpStatusCode? $this->httpStatusCode : 200));
+        return $this->getClient()->sendResponse($msg, $httpCode);
     }
 
     /**
@@ -1252,5 +1256,29 @@ class Server
 
         return false;
     }
+    
+    protected function parsePhpInput()
+	{
+		$input = $this->getPhpInput();
+		if($input)
+		{
+			$data = array();
+			if(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false)
+			{
+				$data = (array) json_decode($input);
+			}
+			//xml parser ?
+			if( empty($data) )
+			{
+				parse_str($input, $data);
+			}
+			$_POST = array_merge($_POST, $data);
+		}
+	}
+	
+	protected function getPhpInput()
+	{
+		return file_get_contents('php://input');
+	}
 
 }
