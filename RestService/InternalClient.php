@@ -10,7 +10,7 @@ namespace RestService;
  */
 class InternalClient extends Client
 {
-    public function sendResponse($pHttpCode = '200', $pMessage)
+    public function sendResponse($pMessage, $pHttpCode = '200')
     {
         $pMessage = array_reverse($pMessage, true);
         $pMessage['status'] = $pHttpCode+0;
