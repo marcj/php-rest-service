@@ -1258,27 +1258,26 @@ class Server
     }
     
     protected function parsePhpInput()
-	{
-		$input = $this->getPhpInput();
-		if($input)
-		{
-			$data = array();
-			if(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false)
-			{
-				$data = (array) json_decode($input);
-			}
-			//xml parser ?
-			if( empty($data) )
-			{
-				parse_str($input, $data);
-			}
-			$_POST = array_merge($_POST, $data);
-		}
-	}
-	
-	protected function getPhpInput()
-	{
-		return file_get_contents('php://input');
-	}
+    {
+        $input = $this->getPhpInput();
+        if($input)
+        {
+            $data = array();
+            if(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false)
+            {
+                $data = (array) json_decode($input);
+            }
+            //xml parser ?
+            if( empty($data) )
+            {
+                parse_str($input, $data);
+            }
+            $_POST = array_merge($_POST, $data);
+        }
+    }
 
+    protected function getPhpInput()
+    {
+        return file_get_contents('php://input');
+    }
 }
