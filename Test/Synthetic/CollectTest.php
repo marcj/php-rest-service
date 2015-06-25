@@ -27,21 +27,6 @@ class CollectTest extends \PHPUnit_Framework_TestCase
 }', $response);
     }
 
-    public function testRootMethods()
-    {
-        $response = $this->restService->simulateCall('/', 'get');
-        $this->assertEquals('{
-    "status": 200,
-    "data": "root GET"
-}', $response);
-
-        $response = $this->restService->simulateCall('/', 'post');
-        $this->assertEquals('{
-    "status": 200,
-    "data": "root POST"
-}', $response);
-    }
-
     public function testUrlAnnotation()
     {
         $response = $this->restService->simulateCall('/stats', 'get');
