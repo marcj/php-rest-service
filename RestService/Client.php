@@ -124,14 +124,15 @@ class Client
      * Sends the actual response.
      *
      * @param string $pHttpCode
-     * @param $pMessage
+     * @param        $pMessage
      */
     public function sendResponse($pHttpCode = '200', $pMessage)
     {
         $suppressStatusCode = isset($_GET['_suppress_status_code']) ? $_GET['_suppress_status_code'] : false;
         if ($this->controller->getHttpStatusCodes() &&
             !$suppressStatusCode &&
-            php_sapi_name() !== 'cli') {
+            php_sapi_name() !== 'cli'
+        ) {
 
             $status = self::$statusCodes[intval($pHttpCode)];
             header('HTTP/1.0 ' . ($status ? $pHttpCode . ' ' . $status : $pHttpCode), true, $pHttpCode);
@@ -215,8 +216,8 @@ class Client
      */
     public function setContentLength($pMessage)
     {
-        if (php_sapi_name() !== 'cli' )
-            header('Content-Length: '.strlen($pMessage));
+        if (php_sapi_name() !== 'cli')
+            header('Content-Length: ' . strlen($pMessage));
     }
 
     /**
@@ -227,7 +228,7 @@ class Client
      */
     public function asJSON($pMessage)
     {
-        if (php_sapi_name() !== 'cli' )
+        if (php_sapi_name() !== 'cli')
             header('Content-Type: application/json; charset=utf-8');
 
         $result = $this->jsonFormat($pMessage);
@@ -249,44 +250,44 @@ class Client
     {
         if (!is_string($json)) $json = json_encode($json);
 
-        $result      = '';
-        $pos         = 0;
-        $strLen      = strlen($json);
-        $indentStr   = '    ';
-        $newLine     = "\n";
+        $result = '';
+        $pos = 0;
+        $strLen = strlen($json);
+        $indentStr = '    ';
+        $newLine = "\n";
         $inEscapeMode = false; //if the last char is a valid \ char.
         $outOfQuotes = true;
 
-        for ($i=0; $i<=$strLen; $i++) {
+        for ($i = 0; $i <= $strLen; $i++) {
 
-            // Grab the next character in the string.
+// Grab the next character in the string.
             $char = substr($json, $i, 1);
 
-            // Are we inside a quoted string?
+// Are we inside a quoted string?
             if ($char == '"' && !$inEscapeMode) {
                 $outOfQuotes = !$outOfQuotes;
 
-                // If this character is the end of an element,
-                // output a new line and indent the next line.
+// If this character is the end of an element,
+// output a new line and indent the next line.
             } elseif (($char == '}' || $char == ']') && $outOfQuotes) {
                 $result .= $newLine;
-                $pos --;
-                for ($j=0; $j<$pos; $j++) {
+                $pos--;
+                for ($j = 0; $j < $pos; $j++) {
                     $result .= $indentStr;
                 }
             } elseif ($char == ':' && $outOfQuotes) {
                 $char .= ' ';
             }
 
-            // Add the character to the result string.
+// Add the character to the result string.
             $result .= $char;
 
-            // If the last character was the beginning of an element,
-            // output a new line and indent the next line.
+// If the last character was the beginning of an element,
+// output a new line and indent the next line.
             if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
                 $result .= $newLine;
                 if ($char == '{' || $char == '[') {
-                    $pos ++;
+                    $pos++;
                 }
 
                 for ($j = 0; $j < $pos; $j++) {
@@ -331,11 +332,11 @@ class Client
             $content = '';
 
             foreach ($pData as $key => $data) {
-                $key = is_numeric($key) ? $pParentTagName.'-item' : $key;
+                $key = is_numeric($key) ? $pParentTagName . '-item' : $key;
                 $content .= str_repeat('  ', $pDepth)
-                    .'<'.htmlspecialchars($key).'>'.
-                    $this->toXml($data, $key, $pDepth+1)
-                    .'</'.htmlspecialchars($key).">\n";
+                    . '<' . htmlspecialchars($key) . '>' .
+                    $this->toXml($data, $key, $pDepth + 1)
+                    . '</' . htmlspecialchars($key) . ">\n";
             }
 
             return $content;
@@ -362,7 +363,7 @@ class Client
     /**
      * Set the current output format.
      *
-     * @param  string         $pFormat a key of $outputForms
+     * @param  string $pFormat a key of $outputForms
      * @return Client
      */
     public function setFormat($pFormat)
@@ -402,7 +403,7 @@ class Client
      */
     public function setupFormats()
     {
-        //through HTTP_ACCEPT
+//through HTTP_ACCEPT
         if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], '*/*') === false) {
             foreach ($this->outputFormats as $formatCode => $formatMethod) {
                 if (strpos($_SERVER['HTTP_ACCEPT'], $formatCode) !== false) {
@@ -412,16 +413,22 @@ class Client
             }
         }
 
-        //through uri suffix
+//through uri suffix
         if (preg_match('/\.(\w+)$/i', $this->getUrl(), $matches)) {
             if (isset($this->outputFormats[$matches[1]])) {
                 $this->outputFormat = $matches[1];
                 $url = $this->getUrl();
-                $this->setUrl(substr($url, 0, (strlen($this->outputFormat)*-1)-1));
+                $this->setUrl(substr($url, 0, (strlen($this->outputFormat) * -1) - 1));
+            }
+        }
+
+//through _format parametr
+        if (isset($_GET['_format'])) {
+            if (isset($this->outputFormats[$_GET['_format']])) {
+                $this->outputFormat = $_GET['_format'];
             }
         }
 
         return $this;
     }
-
 }

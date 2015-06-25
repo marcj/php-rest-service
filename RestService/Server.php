@@ -283,6 +283,8 @@ class Server
     public function setDescribeRoutes($pDescribeRoutes)
     {
         $this->describeRoutes = $pDescribeRoutes;
+
+        return $this;
     }
 
     /**
@@ -917,7 +919,8 @@ class Server
             $definition['parameters'] = array(
                 '_method' => array('description' => 'Can be used as HTTP METHOD if the client does not support HTTP methods.', 'type' => 'string',
                                    'values' => 'GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH'),
-                '_suppress_status_code' => array('description' => 'Suppress the HTTP status code.', 'type' => 'boolean', 'values' => '1, 0')
+                '_suppress_status_code' => array('description' => 'Suppress the HTTP status code.', 'type' => 'boolean', 'values' => '1, 0'),
+                '_format' => array('description' => 'Format of generated data. Can be added as suffix .json .xml', 'type' => 'string', 'values' => 'json, xml'),
             );
         }
 
@@ -1141,7 +1144,7 @@ class Server
                     $item = array();
                     $c = count($match);
                     for ($i =1; $i < $c; $i++) {
-                        if ($regex[$tag][1][$i-1]) {
+                        if (isset($regex[$tag][1][$i-1])) {
                             $item[$regex[$tag][1][$i-1]] = $match[$i];
                         }
                     }
