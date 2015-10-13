@@ -8,7 +8,7 @@ use Test\Controller\MyRoutes;
 class UnicodeTest extends \PHPUnit_Framework_TestCase
 {
 	private function assertEncoding($restService, $test_string){
-		$response = $restService->simulateCall('/test/' + $test_string, 'get');
+		$response = $restService->simulateCall('/test/echo?test_string=' + rawurlencode($test_string), 'get');
 		$this->assertEquals('{
     "status": 200,
     "data": "' + $test_string + '"

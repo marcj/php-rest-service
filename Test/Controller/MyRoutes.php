@@ -57,4 +57,14 @@ class MyRoutes
         return 'test';
     }
 
+    /**
+     * @param string $test_string
+     * @url test/echo
+     * @return string
+     */
+    public function getEcho($test_string)
+    {
+        return $test_string;
+    }
+
 }
