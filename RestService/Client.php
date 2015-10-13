@@ -237,6 +237,27 @@ class Client
         return $result;
     }
 
+    static function prepareUTF8($matches){
+    	return json_decode('"'.$matches[1].'"');
+    }
+    
+    /**
+     * Format data to JSON
+     *
+     * @param string $data The original data to process.
+     * @return string JSON string.
+     */
+    public function jsonEncode($data)
+    {
+    	if (defined('JSON_UNESCAPED_UNICODE')) {
+    		return json_encode($data, JSON_UNESCAPED_UNICODE);
+    	}else{
+    		return preg_replace_callback('/((\\\u[01-9a-fA-F]{4})+)/', '\\Client\\prepareUTF8',
+				json_encode($data)
+			);
+    	}
+    }
+
     /**
      * Indents a flat JSON string to make it more human-readable.
      *
@@ -248,7 +269,7 @@ class Client
      */
     public function jsonFormat($json)
     {
-        if (!is_string($json)) $json = json_encode($json);
+        if (!is_string($json)) $json = $this->jsonEncode($json);
 
         $result = '';
         $pos = 0;
