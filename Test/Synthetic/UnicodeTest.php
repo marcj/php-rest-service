@@ -16,11 +16,11 @@ class UnicodeTest extends \PHPUnit_Framework_TestCase
     {
         $this->restService = Server::create('/', new MyRoutes)
             ->setClient('RestService\\InternalClient')
-            ->collectRoutes();
+            ->addPostRoute('echo', 'postEcho');
     }
 	
 	private function assertEcho($test_string){
-		$response = $this->restService->simulateCall('/echo/test?text=' + rawurlencode($test_string), 'post');
+		$response = $this->restService->simulateCall('/echo?text=' + rawurlencode($test_string), 'post');
 		$this->assertEquals('{
     "status": 200,
     "data": "' + $test_string + '"
