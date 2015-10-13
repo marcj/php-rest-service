@@ -59,6 +59,7 @@ class MyRoutes
 
     /**
      * @param string $text
+     * @url test/test
      * @return string
      */
     public function postEcho($text)
