@@ -20,7 +20,7 @@ class UnicodeTest extends \PHPUnit_Framework_TestCase
     }
 	
 	private function assertEcho($test_string){
-		$response = $this->restService->simulateCall('/echo?test_string=' + rawurlencode($test_string), 'post');
+		$response = $this->restService->simulateCall('/echo/' + rawurlencode($test_string), 'get');
 		$this->assertEquals('{
     "status": 200,
     "data": "' + $test_string + '"

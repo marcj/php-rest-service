@@ -58,12 +58,13 @@ class MyRoutes
     }
 
     /**
-     * @param string $test_string
+     * @param string $text
+     * @url echo/(.*)
      * @return string
      */
-    public function postEcho($test_string)
+    public function getEcho($text)
     {
-        return $test_string;
+        return $text;
     }
 
 }
