@@ -61,7 +61,7 @@ class MyRoutes
      * @param string $test_string
      * @return string
      */
-    public function getEcho($test_string)
+    public function postEcho($test_string)
     {
         return $test_string;
     }
