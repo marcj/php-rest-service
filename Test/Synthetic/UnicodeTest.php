@@ -16,7 +16,7 @@ class UnicodeTest extends \PHPUnit_Framework_TestCase
     {
         $this->restService = Server::create('/', new MyRoutes)
             ->setClient('RestService\\InternalClient')
-            ->addPostRoute('echo', 'postEcho');
+            ->collectRoutes();
     }
 	
 	private function assertEcho($test_string){
@@ -29,7 +29,8 @@ class UnicodeTest extends \PHPUnit_Framework_TestCase
 	
     public function testUnicode()
     {
-        $this->assertEcho('Quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen Wolther spillede på xylofon');
+        $this->assertEcho('В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!');
+    	$this->assertEcho('Quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen Wolther spillede på xylofon');
         $this->assertEcho('Falsches Üben von Xylophonmusik quält jeden größeren Zwerg');
         $this->assertEcho('Γαζέες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο');
         $this->assertEcho('El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.');
@@ -41,7 +42,6 @@ class UnicodeTest extends \PHPUnit_Framework_TestCase
         $this->assertEcho('イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム ウヰノオクヤマ ケフコエテ アサキユメミシ ヱヒモセスン');
         $this->assertEcho('דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה');
         $this->assertEcho('Pchnąć w tę łódź jeża lub ośm skrzyń fig');
-        $this->assertEcho('В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!');
         $this->assertEcho('๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า กว่าบรรดาฝูงสัตว์เดรัจฉาน จงฝ่าฟันพัฒนาวิชาการ อย่าล้างผลาญฤๅเข่นฆ่าบีฑาใคร ไม่ถือโทษโกรธแช่งซัดฮึดฮัดด่า หัดอภัยเหมือนกีฬาอัชฌาสัย ปฏิบัติประพฤติกฎกำหนดใจ พูดจาให้จ๊ะๆ จ๋าๆ น่าฟังเอย ฯ');
         $this->assertEcho('Pijamalı hasta, yağız şoföre çabucak güvendi');
     }
