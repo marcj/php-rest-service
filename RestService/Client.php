@@ -121,6 +121,23 @@ class Client
     }
 
     /**
+     * @param string $out
+     */
+    protected function output($out){
+    	if( !ini_get('zlib.output_compression') && 'ob_gzhandler' != ini_get('output_handler') && isset($_SERVER['HTTP_ACCEPT_ENCODING']) ){
+    		header('Vary: Accept-Encoding'); // Handle proxies
+    		if( false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') && function_exists('gzdeflate') ){
+    			header('Content-Encoding: deflate');
+    			$out = gzdeflate($out, 3);
+    		} elseif( false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') && function_exists('gzencode') ){
+    			header('Content-Encoding: gzip');
+    			$out = gzencode($out, 3);
+    		}
+    	}
+    	echo $out;
+    }
+    
+    /**
      * Sends the actual response.
      *
      * @param string $pHttpCode
@@ -145,7 +162,7 @@ class Client
         $pMessage = array_reverse($pMessage, true);
 
         $method = $this->getOutputFormatMethod($this->getOutputFormat());
-        echo $this->$method($pMessage);
+        self::output($this->$method($pMessage));
         exit;
     }
 
