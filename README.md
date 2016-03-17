@@ -205,7 +205,7 @@ namespace MyRestApi;
 class Admin {
     public function login($username, $password){
 
-        if (!$this->validLogin($username, $password)
+        if (!$this->validLogin($username, $password))
             throw new InvalidLoginException('Login is invalid or no access.');
 
         return $this->getToken();
