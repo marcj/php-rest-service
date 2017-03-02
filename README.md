@@ -98,6 +98,10 @@ Server::create('/')
     ->addGetRoute('foo/(.*)', function($bar){
         return $bar;
     })
+    ->addPostRoute('foo', function($field1, $field2) {
+      // do stuff with $field1, $field2 etc
+      // or you can directly get them with $_POST['field1']
+    })
 ->run();
 
 ```
@@ -303,4 +307,3 @@ Take a look into the code, to get more information about the possibilities. It's
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/marcj/php-rest-service/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
