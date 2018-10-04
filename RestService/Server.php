@@ -1181,9 +1181,9 @@ class Server
     public function findRoute($pUri, $pMethod = '_all_')
     {
         if (isset($this->routes[$pUri][$pMethod]) && $method = $this->routes[$pUri][$pMethod]) {
-            return array($method, null, $pMethod, $pUri);
+            return array($method, array(), $pMethod, $pUri);
         } elseif ($pMethod != '_all_' && isset($this->routes[$pUri]['_all_']) && $method = $this->routes[$pUri]['_all_']) {
-            return array($method, null, $pMethod, $pUri);
+            return array($method, array(), $pMethod, $pUri);
         } else {
             //maybe we have a regex uri
             foreach ($this->routes as $routeUri => $routeMethods) {
