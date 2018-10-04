@@ -14,7 +14,7 @@ class CustomRoutesTest extends \PHPUnit\Framework\TestCase
             ->setClient('RestService\\InternalClient')
             ->addPostRoute('login', 'postLogin');
 
-        $response = $restService->simulateCall('/login', 'post');
+        $response = $restService->simulateCall('/login?', 'post');
 
         $this->assertEquals('{
     "status": 400,
