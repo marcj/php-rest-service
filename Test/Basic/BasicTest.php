@@ -5,7 +5,7 @@ namespace Test\Synthetic;
 use RestService\Server;
 use Test\Controller\MyRoutes;
 
-class BasicTest extends \PHPUnit_Framework_TestCase
+class BasicTest extends \PHPUnit\Framework\TestCase
 {
     public function testCustomUrl()
     {
