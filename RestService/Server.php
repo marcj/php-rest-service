@@ -139,6 +139,7 @@ class Server
     public function __construct($pTriggerUrl, $pControllerClass = null, $pParentController = null)
     {
         $this->normalizeUrl($pTriggerUrl);
+        $this->detectContentType();
 
         if ($pParentController) {
             $this->parentController = $pParentController;
@@ -1211,4 +1212,26 @@ class Server
         return false;
     }
 
+    /**
+     * Detect content type request
+     */
+    private function detectContentType(){
+        if (!empty($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+            $this->parsePhpInput();
+        }
+    }
+
+    /**
+     * Parse data php://input to $_POST. It is used in AngularJS
+     *
+     * @return $this
+     */
+    private function parsePhpInput(){
+        $input = file_get_contents("php://input");
+        $data = json_decode($input, true);
+        if (!empty($data)) foreach($data as $key => $value)
+            $_POST[$key] = $value;
+
+        return $this;
+    }
 }

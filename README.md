@@ -247,6 +247,10 @@ class Tools {
 ```
 
 
+### Way 4. Automatic detect receive `Content-Type` as `application/json`,  parse `php://input`
+
+All data will be writed into `$_POST`
+
 ## Responses
 
 The response body is always a array (JSON per default) containing a status code and the actual data.
