@@ -83,6 +83,7 @@ class Client
         415 => 'Unsupported Media Type',
         416 => 'Requested Range Not Satisfiable',
         417 => 'Expectation Failed',
+        418 => 'I\'m a Tea Pot',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
@@ -126,7 +127,7 @@ class Client
      * @param string $pHttpCode
      * @param        $pMessage
      */
-    public function sendResponse($pHttpCode = '200', $pMessage)
+    public function sendResponse($pMessage, $pHttpCode = '200')
     {
         $suppressStatusCode = isset($_GET['_suppress_status_code']) ? $_GET['_suppress_status_code'] : false;
         if ($this->controller->getHttpStatusCodes() &&

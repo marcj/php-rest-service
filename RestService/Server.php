@@ -123,6 +123,13 @@ class Server
      * @var boolean
      */
     protected $withStatusCode = true;
+    
+    /**
+     *  Custom user httpCode
+     *
+     *  @var integer
+     */
+    protected $httpStatusCode = 200;
 
     /**
      * @var callable
@@ -163,6 +170,7 @@ class Server
 
         } else {
             $this->setClient(new Client($this));
+            $this->parsePhpInput();
         }
 
         $this->setClass($pControllerClass);
@@ -217,6 +225,19 @@ class Server
 
         return $this;
     }
+    
+    /**
+     * Setting up http code
+     * 
+     * @param integer $httpStatusCode
+     * @return Server $this
+     */
+     
+    public function setHttpStatusCode($httpStatusCode)
+    {
+        $this->httpStatusCode = $httpStatusCode;
+        return $this;
+    }
 
     /**
      *
@@ -225,6 +246,15 @@ class Server
     public function getHttpStatusCodes()
     {
         return $this->withStatusCode;
+    }
+    
+    /**
+     *
+     * @return integer
+     */
+    public function getHttpStatusCode()
+    {
+        return $this->httpStatusCode;
     }
 
     /**
@@ -424,10 +454,14 @@ class Server
      */
     public function sendBadRequest($pCode, $pMessage)
     {
-        if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
-        $msg = array('error' => $pCode, 'message' => $pMessage);
-        if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse('400', $msg);
+        $httpCode = ($this->httpStatusCode && substr($this->httpStatusCode, 0, 1) === '4')? $this->httpStatusCode : 400;
+        if (is_object($pMessage) && $pMessage->xdebug_message) {
+            $pMessage = $pMessage->xdebug_message;
+        }
+        if (!$this->getClient()) {
+            throw new \Exception('client_not_found_in_ServerController'); 
+        }
+        return $this->setHttpStatusCode($httpCode)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -439,10 +473,14 @@ class Server
      */
     public function sendError($pCode, $pMessage)
     {
-        if (is_object($pMessage) && $pMessage->xdebug_message) $pMessage = $pMessage->xdebug_message;
-        $msg = array('error' => $pCode, 'message' => $pMessage);
-        if (!$this->getClient()) throw new \Exception('client_not_found_in_ServerController');
-        return $this->getClient()->sendResponse('500', $msg);
+        $httpCode = ($this->httpStatusCode && substr($this->httpStatusCode, 0, 1) === '5')? $this->httpStatusCode : 400;
+        if (is_object($pMessage) && $pMessage->xdebug_message) {
+            $pMessage = $pMessage->xdebug_message;
+        }
+        if (!$this->getClient()) {
+            throw new \Exception('client_not_found_in_ServerController');
+        }
+        return $this->setHttpStatusCode($httpCode)->send(array('error' => $pCode, 'message' => $pMessage));
     }
 
     /**
@@ -457,7 +495,9 @@ class Server
         }
 
         $message = $pException->getMessage();
-        if (is_object($message) && $message->xdebug_message) $message = $message->xdebug_message;
+        if (is_object($message) && $message->xdebug_message) {
+            $message = $message->xdebug_message;
+        }
 
         $msg = array('error' => get_class($pException), 'message' => $message);
 
@@ -467,9 +507,10 @@ class Server
             $msg['trace'] = $pException->getTraceAsString();
         }
 
-        if (!$this->getClient()) throw new \Exception('Client not found in ServerController');
-        return $this->getClient()->sendResponse('500', $msg);
-
+        if (!$this->getClient()) {
+            throw new \Exception('Client not found in ServerController');
+        }
+        return $this->setHttpStatusCode(500)->send($msg);
     }
 
     /**
@@ -684,7 +725,15 @@ class Server
      */
     public function send($pData)
     {
-        return $this->getClient()->sendResponse(200, array('data' => $pData));
+        $msg = array();
+        $httpCode = ($this->httpStatusCode? $this->httpStatusCode : 200);
+        if( substr($this->httpStatusCode, 0, 1) === '2' )
+        {
+          $msg['data'] = $pData;
+        } else {
+          $msg = $pData;
+        }
+        return $this->getClient()->sendResponse($msg, $httpCode);
     }
 
     /**
@@ -1210,5 +1259,28 @@ class Server
 
         return false;
     }
+    
+    protected function parsePhpInput()
+    {
+        $input = $this->getPhpInput();
+        if($input)
+        {
+            $data = array();
+            if(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false)
+            {
+                $data = (array) json_decode($input);
+            }
+            //xml parser ?
+            if( empty($data) )
+            {
+                parse_str($input, $data);
+            }
+            $_POST = array_merge($_POST, $data);
+        }
+    }
 
+    protected function getPhpInput()
+    {
+        return file_get_contents('php://input');
+    }
 }
