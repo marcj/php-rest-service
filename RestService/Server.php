@@ -811,6 +811,7 @@ class Server
 
         if ($method == '_all_')
             $arguments[] = $method;
+        else $regexArguments = [];
 
         if (is_array($regexArguments)) {
             $arguments = array_merge($arguments, $regexArguments);
